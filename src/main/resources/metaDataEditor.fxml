@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<GridPane fx:id="rootGrid" alignment="center" hgap="10.0" prefHeight="700.0" prefWidth="1300.0" stylesheets="@styleSheet.css" vgap="10" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.breakspirit.metaDataEditor.Controller">
+   <columnConstraints>
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+   </rowConstraints>
+   <children>
+      <VBox alignment="TOP_CENTER" prefHeight="700.0" prefWidth="1300.0" spacing="10.0" styleClass="background">
+         <children>
+            <HBox prefHeight="48.0" prefWidth="1290.0">
+               <children>
+                  <Button fx:id="chooseFilesButton" alignment="CENTER" mnemonicParsing="false" onAction="#openFileChooserDialog" prefWidth="400.0" text="Choose Files to Edit">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="450.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button alignment="CENTER" mnemonicParsing="false" text="Refresh Files in List">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets left="150.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" text="Clear List">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
+            <TableView fx:id="fileListTable" editable="true" prefHeight="580.0" prefWidth="1290.0">
+              <columns>
+                <TableColumn fx:id="fileNameColumn" prefWidth="223.0" text="File Name" />
+                <TableColumn fx:id="createdTimeColumn" prefWidth="203.0" text="Created Time" />
+                  <TableColumn fx:id="modifiedTimeColumn" maxWidth="343.0" prefWidth="136.0" text="Modified Time" />
+              </columns>
+            </TableView>
+            <Label fx:id="alertLabel" text="Alert Label" textAlignment="RIGHT">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Pane prefHeight="45.0" prefWidth="1290.0">
+               <children>
+                  <Button fx:id="applyButton" alignment="CENTER" layoutX="20.0" layoutY="1.0" mnemonicParsing="false" onAction="#applyRenameOperations" prefHeight="30.0" prefWidth="262.0" styleClass="btn" text="Apply" textAlignment="CENTER">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets left="1000.0" />
+               </VBox.margin>
+            </Pane>
+         </children>
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
+         <padding>
+            <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+         </padding></VBox>
+   </children>
+</GridPane>
