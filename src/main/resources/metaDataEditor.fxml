@@ -32,7 +32,7 @@
                         <Insets left="450.0" />
                      </HBox.margin>
                   </Button>
-                  <Button alignment="CENTER" mnemonicParsing="false" text="Refresh Files in List">
+                  <Button fx:id="refreshButton" alignment="CENTER" mnemonicParsing="false" onAction="#refreshButtonAction" text="Refresh Files in List">
                      <font>
                         <Font size="14.0" />
                      </font>
@@ -40,18 +40,18 @@
                         <Insets left="150.0" />
                      </HBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" text="Clear List">
+                  <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearButtonAction" text="Clear List">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Button>
                </children>
             </HBox>
-            <TableView fx:id="fileListTable" editable="true" prefHeight="580.0" prefWidth="1290.0">
+            <TableView fx:id="fileListTable" editable="true" onDragDropped="#dragDropAction" prefHeight="580.0" prefWidth="1290.0" tableMenuButtonVisible="true">
               <columns>
                 <TableColumn fx:id="fileNameColumn" prefWidth="223.0" text="File Name" />
-                <TableColumn fx:id="createdTimeColumn" prefWidth="203.0" text="Created Time" />
-                  <TableColumn fx:id="modifiedTimeColumn" maxWidth="343.0" prefWidth="136.0" text="Modified Time" />
+                <TableColumn fx:id="dateCreatedColumn" prefWidth="203.0" text="Date Created" />
+                  <TableColumn fx:id="dateModifiedColumn" maxWidth="343.0" prefWidth="136.0" text="Date Modified" />
               </columns>
             </TableView>
             <Label fx:id="alertLabel" text="Alert Label" textAlignment="RIGHT">

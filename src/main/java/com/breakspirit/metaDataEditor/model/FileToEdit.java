@@ -7,43 +7,71 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 
 public class FileToEdit {
 
-    private SimpleStringProperty actualFileName;
-    private SimpleStringProperty updatedPreviewFileName;
     private File file;
+    private SimpleStringProperty fileName;
+    private SimpleStringProperty dateCreated;
+    private SimpleStringProperty dateModified;
 
-    public FileToEdit(File file, String updatedFileName) {
-        this.actualFileName = new SimpleStringProperty(file.getName());
+    public FileToEdit(File file) {
         this.file = file;
-        this.updatedPreviewFileName = new SimpleStringProperty(updatedFileName);
+        this.fileName = new SimpleStringProperty(file.getName());
+
+        // Populate metadata values
+        Path filePath = file.toPath();
+        try {
+            BasicFileAttributes fileAttributes = Files.readAttributes(filePath, BasicFileAttributes.class);
+
+            this.dateCreated = new SimpleStringProperty(fileAttributes.creationTime().toString());
+            this.dateModified = new SimpleStringProperty(fileAttributes.lastModifiedTime().toString());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public String getActualFileName() {
-        return actualFileName.get();
+    public String getFileName() {
+        return fileName.get();
     }
 
-    public void setActualFileName(String newFileName) throws IOException {
-        if(!file.exists()) {
+    public void renameFile(String newFileName) throws IOException {
+        if (!file.exists()) {
             throw new IOException("Trying to rename file '" + file.getName() + "' but it does not exist!");
         }
         Path source = Paths.get(file.getPath());
         Files.move(source, source.resolveSibling(newFileName));
-        this.actualFileName.set(newFileName);
-
-//        this.file.renameTo(newFileName);
+        this.fileName.set(newFileName);
     }
 
-    public String getUpdatedPreviewFileName() {
-        return updatedPreviewFileName.get();
-    }
-
-    public void setUpdatedPreviewFileName(String updatedPreviewFileName) {
-        this.updatedPreviewFileName.set(updatedPreviewFileName);
-    }
 
     public File getFile() {
         return file;
+    }
+
+    public String getDateCreated() {
+        return dateCreated.get();
+    }
+
+    public SimpleStringProperty dateCreatedProperty() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated.set(dateCreated);
+    }
+
+    public String getDateModified() {
+        return dateModified.get();
+    }
+
+    public SimpleStringProperty dateModifiedProperty() {
+        return dateModified;
+    }
+
+    public void setDateModified(String dateModified) {
+        this.dateModified.set(dateModified);
     }
 }

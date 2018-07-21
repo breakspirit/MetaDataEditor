@@ -16,6 +16,7 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,33 +28,25 @@ public class Controller {
     // UI elements
     public GridPane rootGrid;
     public Button chooseFilesButton;
-//    public Button previewButton;
-    public Button applyButton;
+    public Button refreshButton;
+    public Button clearButton;
     public TableView fileListTable;
     public TableColumn fileNameColumn;
-    public TableColumn createdTimeColumn;
-//    public TextField prefixField;
-//    public TextField suffixField;
-//    public TextField changeExtensionField;
-//    public CheckBox textReplaceCheckbox;
-//    public TextField replaceThisField;
-//    public TextField withThisField;
-//    public CheckBox tokenizedRenameCheckbox;
-//    public TextField tokenizedRenameField;
+    public TableColumn dateCreatedColumn;
+    public TableColumn dateModifiedColumn;
     public Label alertLabel;
+    public Button applyButton;
 
     private Logger logger = Logger.getLogger("Controller");
-
-    private int ascendingNumbersCounter = 1;
 
     @FXML
     public void initialize() {
         logger.log(Level.INFO, "Initializing the Controller");
 
-        fileNameColumn.setCellValueFactory(new PropertyValueFactory<FileToEdit, String>("actualFileName"));
-        createdTimeColumn.setCellValueFactory(new PropertyValueFactory<FileToEdit, String>("updatedPreviewFileName"));
+        fileNameColumn.setCellValueFactory(new PropertyValueFactory<FileToEdit, String>("fileName"));
+        dateCreatedColumn.setCellValueFactory(new PropertyValueFactory<FileToEdit, String>("dateCreated"));
+        dateModifiedColumn.setCellValueFactory(new PropertyValueFactory<FileToEdit, String>("dateModified"));
 
-        setCheckboxValues();
         showPositiveAlertMessage("");
 
         applyButton.setDisable(true);
@@ -68,12 +61,12 @@ public class Controller {
 
         List<File> filesSelected = fileChooser.showOpenMultipleDialog(rootGrid.getScene().getWindow());
 
-        if(filesSelected != null) {
+        if (filesSelected != null) {
             logger.log(Level.INFO, "Number of files chosen: " + filesSelected.size());
             filesToRename.clear();
 
-            for(File file : filesSelected) {
-                FileToEdit fileToEdit = new FileToEdit(file, file.getName());
+            for (File file : filesSelected) {
+                FileToEdit fileToEdit = new FileToEdit(file);
                 filesToRename.add(fileToEdit);
             }
 
@@ -86,17 +79,33 @@ public class Controller {
         showPositiveAlertMessage("");
     }
 
-    public void previewButtonAction(ActionEvent actionEvent) {
-        logger.log(Level.INFO, "User is previewing their changes");
+    public void clearButtonAction(ActionEvent actionEvent) {
+        logger.log(Level.INFO, "User is clearing the table");
 
-        ascendingNumbersCounter = 1;
+        filesToRename.clear();
+        showPositiveAlertMessage("Table cleared");
 
-        for(FileToEdit fileToEdit : filesToRename) {
-            String updatedPreviewFileName = applyAllSelectedTransformations(fileToEdit.getFile());
+        fileListTable.refresh();
+    }
 
-            fileToEdit.setUpdatedPreviewFileName(updatedPreviewFileName);
+    public void refreshButtonAction(ActionEvent actionEvent) {
+        logger.log(Level.INFO, "User is refreshing the table");
+
+        ArrayList<File> refreshedFiles = new ArrayList<>();
+
+        for (FileToEdit fileToEdit : filesToRename) {
+            if (fileToEdit.getFile().exists()) {
+                refreshedFiles.add(new File(fileToEdit.getFile().getPath()));
+            }
         }
-        showPositiveAlertMessage("Preview updated");
+        filesToRename.clear();
+
+        for (File file : refreshedFiles) {
+            FileToEdit fileToEdit = new FileToEdit(file);
+            filesToRename.add(fileToEdit);
+        }
+
+        showPositiveAlertMessage("Table refreshed");
 
         fileListTable.refresh();
     }
@@ -104,22 +113,19 @@ public class Controller {
     public void applyRenameOperations(ActionEvent actionEvent) {
         logger.log(Level.INFO, "User chose to apply the changes");
 
-        if(filesToRename.isEmpty()) {
+        if (filesToRename.isEmpty()) {
             logger.log(Level.SEVERE, "User tried to apply changes to an empty list of files, which should not happen");
             return;
         }
 
-        ascendingNumbersCounter = 1;
-
-        for(FileToEdit fileToEdit : filesToRename) {
+        for (FileToEdit fileToEdit : filesToRename) {
             String newFileName = applyAllSelectedTransformations(fileToEdit.getFile());
 
             try {
-                fileToEdit.setUpdatedPreviewFileName(newFileName);
-                fileToEdit.setActualFileName(newFileName);
+                fileToEdit.renameFile(newFileName);
             } catch (IOException e) {
-                logger.log(Level.SEVERE, "Failed to apply the rename operation to file '" + fileToEdit.getActualFileName() + "' so we are aborting the operation");
-                showNegativeAlertMessage("Rename operation failed at file '" + fileToEdit.getActualFileName() + "'");
+                logger.log(Level.SEVERE, "Failed to apply the rename operation to file '" + fileToEdit.getFileName() + "' so we are aborting the operation");
+                showNegativeAlertMessage("Rename operation failed at file '" + fileToEdit.getFileName() + "'");
                 fileListTable.refresh();
                 return;
             }
@@ -131,29 +137,7 @@ public class Controller {
     private String applyAllSelectedTransformations(File inputFile) {
         String transformedName = inputFile.getName();
 
-//        if(tokenizedRenameCheckbox.isSelected()) {
-//            transformedName = FileNameTransformation.applyTokenizedRename(inputFile, tokenizedRenameField.getText(), ascendingNumbersCounter++);
-//        }
-//        if(textReplaceCheckbox.isSelected()) {
-//            transformedName = FileNameTransformation.applyTextReplace(transformedName, replaceThisField.getText(), withThisField.getText());
-//        }
-//        transformedName = FileNameTransformation.applyPrefix(transformedName, prefixField.getText());
-//        transformedName = FileNameTransformation.applySuffix(transformedName, suffixField.getText());
-//        transformedName = FileNameTransformation.applyNewExtension(transformedName, changeExtensionField.getText());
-
         return transformedName;
-    }
-
-//    public void textReplaceCheckboxAction(ActionEvent actionEvent) {
-//        tokenizedRenameCheckbox.setSelected(false);
-//
-//        setCheckboxValues();
-//    }
-
-    private void setCheckboxValues() {
-//        replaceThisField.setDisable(!textReplaceCheckbox.isSelected());
-//        withThisField.setDisable(!textReplaceCheckbox.isSelected());
-//        tokenizedRenameField.setDisable(!tokenizedRenameCheckbox.isSelected());
     }
 
     private void showPositiveAlertMessage(String message) {
