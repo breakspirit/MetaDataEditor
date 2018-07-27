@@ -41,6 +41,19 @@
             <version>4.8.2</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.3.0-alpha4</version>
+        </dependency>
+
+        <!-- Library of audio/video codecs -->
+        <!--<dependency>-->
+            <!--<groupId>org.jcodec</groupId>-->
+            <!--<artifactId>jcodec</artifactId>-->
+            <!--<version>0.2.2</version>-->
+        <!--</dependency>-->
     </dependencies>
 
     <build>

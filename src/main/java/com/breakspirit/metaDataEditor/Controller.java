@@ -14,21 +14,18 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
-import javafx.util.StringConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 public class Controller {
 
-    private final ObservableList<FileToEdit> filesToRename = FXCollections.observableArrayList();
+    private final ObservableList<FileToEdit> filesToEdit = FXCollections.observableArrayList();
 
     // UI elements
     public GridPane rootGrid;
@@ -42,13 +39,14 @@ public class Controller {
     public Label alertLabel;
     public Button applyButton;
 
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
+    private static final String DEFAULT_FILE_LOCATION = "C:\\Users\\break\\Desktop";
 
-    private Logger logger = Logger.getLogger("Controller");
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
 
     @FXML
     public void initialize() {
-        logger.log(Level.INFO, "Initializing the Controller");
+        logger.info("Initializing the Controller");
 
         fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("fileName"));
         dateCreatedColumn.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
@@ -58,87 +56,68 @@ public class Controller {
 
         applyButton.setDisable(true);
 
-        StringConverter<LocalDateTime> dateStringConverter = new StringConverter<>() {
-
-            @Override
-            public String toString(LocalDateTime localDateTime) {
-                if (localDateTime == null) {
-                    return "";
-                } else {
-                    return dateTimeFormatter.format(localDateTime);
-                }
-            }
-
-            @Override
-            public LocalDateTime fromString(String localDateTimeString) {
-                try {
-                    return LocalDateTime.parse(localDateTimeString, dateTimeFormatter);
-                } catch (DateTimeParseException exc) {
-                    return null;
-                }
-            }
-        };
-
-        dateCreatedColumn.setCellFactory(TextFieldTableCell.forTableColumn(dateStringConverter));
-        dateModifiedColumn.setCellFactory(TextFieldTableCell.forTableColumn(dateStringConverter));
+        dateCreatedColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DateFieldConverter()));
+        dateModifiedColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DateFieldConverter()));
     }
 
     public void openFileChooserDialog(ActionEvent actionEvent) {
-        logger.log(Level.INFO, "Should be showing file select window");
+        logger.info("Should be showing file select window");
 
         final FileChooser fileChooser = new FileChooser();
-//        fileChooser.setInitialDirectory(new File("C:\\Users\\break\\Desktop\\file rename test folder"));
-        fileChooser.setTitle("Choose files to be renamed");
+        if (new File(DEFAULT_FILE_LOCATION).isDirectory()) {
+            fileChooser.setInitialDirectory(new File(DEFAULT_FILE_LOCATION));
+        }
+        fileChooser.setTitle("Choose files to be edited");
 
         List<File> filesSelected = fileChooser.showOpenMultipleDialog(rootGrid.getScene().getWindow());
 
         if (filesSelected != null) {
-            logger.log(Level.INFO, "Number of files chosen: " + filesSelected.size());
-            filesToRename.clear();
+            logger.info("Number of files chosen: " + filesSelected.size());
+            filesToEdit.clear();
 
             for (File file : filesSelected) {
                 FileToEdit fileToEdit = new FileToEdit(file);
-                filesToRename.add(fileToEdit);
+                filesToEdit.add(fileToEdit);
             }
 
             applyButton.setDisable(false);
-            fileListTable.setItems(filesToRename);
+            fileListTable.setItems(filesToEdit);
 
         } else {
-            logger.log(Level.INFO, "No files were chosen");
+            logger.info("No files were chosen");
         }
         showPositiveAlertMessage("");
     }
 
     public void editDateCreatedAction(ActionEvent actionEvent) {
-        logger.log(Level.INFO, "Altering date created");
+        logger.info("Altering date created");
 
     }
 
     public void clearButtonAction(ActionEvent actionEvent) {
-        logger.log(Level.INFO, "User is clearing the table");
+        logger.info("User is clearing the table");
 
-        filesToRename.clear();
+        filesToEdit.clear();
         showPositiveAlertMessage("Table cleared");
 
         fileListTable.refresh();
     }
 
     public void refreshButtonAction(ActionEvent actionEvent) {
-        logger.log(Level.INFO, "User is refreshing the table");
+        logger.info("User is refreshing the table");
 
         ArrayList<File> refreshedFiles = new ArrayList<>();
 
-        for (FileToEdit fileToEdit : filesToRename) {
+        for (FileToEdit fileToEdit : filesToEdit) {
             if (fileToEdit.getFile().exists()) {
                 refreshedFiles.add(new File(fileToEdit.getFile().getPath()));
             }
         }
-        filesToRename.clear();
+        filesToEdit.clear();
 
         for (File file : refreshedFiles) {
             FileToEdit fileToEdit = new FileToEdit(file);
-            filesToRename.add(fileToEdit);
+            filesToEdit.add(fileToEdit);
         }
 
         showPositiveAlertMessage("Table refreshed");
@@ -147,26 +126,27 @@ public class Controller {
     }
 
     public void applyFileEdits(ActionEvent actionEvent) {
-        logger.log(Level.INFO, "User chose to apply the changes");
+        logger.info("User chose to apply the changes");
 
-        if (filesToRename.isEmpty()) {
-            logger.log(Level.SEVERE, "User tried to apply changes to an empty list of files, which should not happen");
+        if (filesToEdit.isEmpty()) {
+            logger.error("User tried to apply changes to an empty list of files, which should not happen");
             return;
         }
 
-        for (FileToEdit fileToEdit : filesToRename) {
-            String newFileName = applyAllSelectedTransformations(fileToEdit.getFile());
-
-            try {
-                fileToEdit.renameFile(newFileName);
-            } catch (IOException e) {
-                logger.log(Level.SEVERE, "Failed to apply the rename operation to file '" + fileToEdit.getFileName() + "' so we are aborting the operation");
-                showNegativeAlertMessage("Rename operation failed at file '" + fileToEdit.getFileName() + "'");
-                fileListTable.refresh();
-                return;
-            }
+        for (FileToEdit fileToEdit : filesToEdit) {
+            continue;
+//            String newFileName = applyAllSelectedTransformations(fileToEdit.getFile());
+//
+//            try {
+//                fileToEdit.renameFile(newFileName);
+//            } catch (IOException e) {
+//                logger.log(Level.SEVERE, "Failed to apply the rename operation to file '" + fileToEdit.getFileName() + "' so we are aborting the operation");
+//                showNegativeAlertMessage("Rename operation failed at file '" + fileToEdit.getFileName() + "'");
+//                fileListTable.refresh();
+//                return;
+//            }
         }
-        showPositiveAlertMessage("All rename operations were applied successfully!");
+        showPositiveAlertMessage("All edit operations were applied successfully!");
         fileListTable.refresh();
     }
 

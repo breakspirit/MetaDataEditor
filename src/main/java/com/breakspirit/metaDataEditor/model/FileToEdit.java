@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -43,16 +42,6 @@ public class FileToEdit {
     public String getFileName() {
         return fileName.get();
     }
-
-    public void renameFile(String newFileName) throws IOException {
-        if (!file.exists()) {
-            throw new IOException("Trying to rename file '" + file.getName() + "' but it does not exist!");
-        }
-        Path source = Paths.get(file.getPath());
-        Files.move(source, source.resolveSibling(newFileName));
-        this.fileName.set(newFileName);
-    }
-
 
     public File getFile() {
         return file;

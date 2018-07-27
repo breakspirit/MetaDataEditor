@@ -6,20 +6,21 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.google.common.base.Strings;
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
-import java.util.logging.Logger;
 
 /**
  * @author Kevin Bernard
  */
-class FileNameTransformation {
+class MetaDataTransformation {
 
-    private static Logger logger = Logger.getLogger("FileNameTransformation");
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String ORIGINAL_NAME_TOKEN = "%ON";
     private static final String ASCENDING_NUMBERS_TOKEN = "%AN";
@@ -80,7 +81,6 @@ class FileNameTransformation {
 
         } catch (ImageProcessingException e) {
 //            if(tokenizedRenameString.contains(SOMETHING)) {
-//                logger.log(Level.INFO, "'" + inputFile.getName() + "' did not have image metadata...");
 //            }
         } catch (IOException e) {
             e.printStackTrace();

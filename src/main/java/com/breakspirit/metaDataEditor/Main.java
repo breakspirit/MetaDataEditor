@@ -6,18 +6,17 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Main extends Application {
 
-    private Logger logger = Logger.getLogger("Main");
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public void start(final Stage primaryStage) throws Exception{
+    public void start(final Stage primaryStage) throws Exception {
 
-        logger.log(Level.INFO, "Starting the Meta Data Editor app");
+        logger.info("Starting the Meta Data Editor app");
         Parent root = FXMLLoader.load(getClass().getResource("/metaDataEditor.fxml"));
 
         primaryStage.setTitle("Meta Data Editor");
