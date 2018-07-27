@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -37,6 +38,16 @@ public class FileToEdit {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void updateFileOnDrive() throws IOException {
+        if (!file.exists()) {
+            throw new IOException("Trying to update file '" + file.getName() + "' but it does not exist!");
+        }
+        FileTime dateCreatedFileTime = FileTime.from(dateCreated.get().atZone(ZoneId.systemDefault()).toInstant());
+        FileTime dateModifiedFileTime = FileTime.from(dateCreated.get().atZone(ZoneId.systemDefault()).toInstant());
+        Files.setAttribute(file.toPath(), "creationTime", dateCreatedFileTime);
+        Files.setAttribute(file.toPath(), "lastModifiedTime", dateModifiedFileTime);
     }
 
     public String getFileName() {

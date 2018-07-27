@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,11 +90,6 @@ public class Controller {
         showPositiveAlertMessage("");
     }
 
-    public void editDateCreatedAction(ActionEvent actionEvent) {
-        logger.info("Altering date created");
-
-    }
-
     public void clearButtonAction(ActionEvent actionEvent) {
         logger.info("User is clearing the table");
 
@@ -134,17 +130,15 @@ public class Controller {
         }
 
         for (FileToEdit fileToEdit : filesToEdit) {
-            continue;
-//            String newFileName = applyAllSelectedTransformations(fileToEdit.getFile());
-//
-//            try {
-//                fileToEdit.renameFile(newFileName);
-//            } catch (IOException e) {
-//                logger.log(Level.SEVERE, "Failed to apply the rename operation to file '" + fileToEdit.getFileName() + "' so we are aborting the operation");
-//                showNegativeAlertMessage("Rename operation failed at file '" + fileToEdit.getFileName() + "'");
-//                fileListTable.refresh();
-//                return;
-//            }
+            try {
+                fileToEdit.updateFileOnDrive();
+
+            } catch (IOException e) {
+                logger.error("Failed to apply the edit operation to file '" + fileToEdit.getFileName() + "' so we are aborting the operation");
+                showNegativeAlertMessage("Edit operation failed at file '" + fileToEdit.getFileName() + "'");
+                fileListTable.refresh();
+                return;
+            }
         }
         showPositiveAlertMessage("All edit operations were applied successfully!");
         fileListTable.refresh();
