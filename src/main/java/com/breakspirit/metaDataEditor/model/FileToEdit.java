@@ -1,5 +1,7 @@
 package com.breakspirit.metaDataEditor.model;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 import java.io.File;
@@ -8,13 +10,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 public class FileToEdit {
 
     private File file;
     private SimpleStringProperty fileName;
-    private SimpleStringProperty dateCreated;
-    private SimpleStringProperty dateModified;
+    private ObjectProperty<LocalDateTime> dateCreated;
+    private ObjectProperty<LocalDateTime> dateModified;
 
     public FileToEdit(File file) {
         this.file = file;
@@ -25,8 +29,11 @@ public class FileToEdit {
         try {
             BasicFileAttributes fileAttributes = Files.readAttributes(filePath, BasicFileAttributes.class);
 
-            this.dateCreated = new SimpleStringProperty(fileAttributes.creationTime().toString());
-            this.dateModified = new SimpleStringProperty(fileAttributes.lastModifiedTime().toString());
+            LocalDateTime dateCreatedLocalDate = LocalDateTime.ofInstant(fileAttributes.creationTime().toInstant(), ZoneId.systemDefault());
+            this.dateCreated = new SimpleObjectProperty<>(dateCreatedLocalDate);
+
+            LocalDateTime dateModifiedLocalDate = LocalDateTime.ofInstant(fileAttributes.lastModifiedTime().toInstant(), ZoneId.systemDefault());
+            this.dateModified = new SimpleObjectProperty<>(dateModifiedLocalDate);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -51,27 +58,27 @@ public class FileToEdit {
         return file;
     }
 
-    public String getDateCreated() {
+    public LocalDateTime getDateCreated() {
         return dateCreated.get();
     }
 
-    public SimpleStringProperty dateCreatedProperty() {
+    public ObjectProperty dateCreatedProperty() {
         return dateCreated;
     }
 
-    public void setDateCreated(String dateCreated) {
+    public void setDateCreated(LocalDateTime dateCreated) {
         this.dateCreated.set(dateCreated);
     }
 
-    public String getDateModified() {
+    public LocalDateTime getDateModified() {
         return dateModified.get();
     }
 
-    public SimpleStringProperty dateModifiedProperty() {
+    public ObjectProperty dateModifiedProperty() {
         return dateModified;
     }
 
-    public void setDateModified(String dateModified) {
+    public void setDateModified(LocalDateTime dateModified) {
         this.dateModified.set(dateModified);
     }
 }

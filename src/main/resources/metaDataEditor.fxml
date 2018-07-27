@@ -47,10 +47,10 @@
                   </Button>
                </children>
             </HBox>
-            <TableView fx:id="fileListTable" editable="true" onDragDropped="#dragDropAction" prefHeight="580.0" prefWidth="1290.0" tableMenuButtonVisible="true">
+            <TableView fx:id="fileListTable" editable="true" prefHeight="580.0" prefWidth="1290.0" tableMenuButtonVisible="true">
               <columns>
                 <TableColumn fx:id="fileNameColumn" prefWidth="223.0" text="File Name" />
-                <TableColumn fx:id="dateCreatedColumn" prefWidth="203.0" text="Date Created" />
+                <TableColumn fx:id="dateCreatedColumn" onEditCommit="#editDateCreatedAction" prefWidth="203.0" text="Date Created" />
                   <TableColumn fx:id="dateModifiedColumn" maxWidth="343.0" prefWidth="136.0" text="Date Modified" />
               </columns>
             </TableView>
@@ -61,7 +61,7 @@
             </Label>
             <Pane prefHeight="45.0" prefWidth="1290.0">
                <children>
-                  <Button fx:id="applyButton" alignment="CENTER" layoutX="20.0" layoutY="1.0" mnemonicParsing="false" onAction="#applyRenameOperations" prefHeight="30.0" prefWidth="262.0" styleClass="btn" text="Apply" textAlignment="CENTER">
+                  <Button fx:id="applyButton" alignment="CENTER" layoutX="20.0" layoutY="1.0" mnemonicParsing="false" onAction="#applyFileEdits" prefHeight="30.0" prefWidth="262.0" styleClass="btn" text="Apply" textAlignment="CENTER">
                      <font>
                         <Font size="14.0" />
                      </font>

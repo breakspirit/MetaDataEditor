@@ -10,12 +10,17 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import javafx.util.StringConverter;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -31,11 +36,13 @@ public class Controller {
     public Button refreshButton;
     public Button clearButton;
     public TableView fileListTable;
-    public TableColumn fileNameColumn;
-    public TableColumn dateCreatedColumn;
-    public TableColumn dateModifiedColumn;
+    public TableColumn<FileToEdit, String> fileNameColumn;
+    public TableColumn<FileToEdit, LocalDateTime> dateCreatedColumn;
+    public TableColumn<FileToEdit, LocalDateTime> dateModifiedColumn;
     public Label alertLabel;
     public Button applyButton;
+
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
 
     private Logger logger = Logger.getLogger("Controller");
 
@@ -43,13 +50,37 @@ public class Controller {
     public void initialize() {
         logger.log(Level.INFO, "Initializing the Controller");
 
-        fileNameColumn.setCellValueFactory(new PropertyValueFactory<FileToEdit, String>("fileName"));
-        dateCreatedColumn.setCellValueFactory(new PropertyValueFactory<FileToEdit, String>("dateCreated"));
-        dateModifiedColumn.setCellValueFactory(new PropertyValueFactory<FileToEdit, String>("dateModified"));
+        fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("fileName"));
+        dateCreatedColumn.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
+        dateModifiedColumn.setCellValueFactory(new PropertyValueFactory<>("dateModified"));
 
         showPositiveAlertMessage("");
 
         applyButton.setDisable(true);
+
+        StringConverter<LocalDateTime> dateStringConverter = new StringConverter<>() {
+
+            @Override
+            public String toString(LocalDateTime localDateTime) {
+                if (localDateTime == null) {
+                    return "";
+                } else {
+                    return dateTimeFormatter.format(localDateTime);
+                }
+            }
+
+            @Override
+            public LocalDateTime fromString(String localDateTimeString) {
+                try {
+                    return LocalDateTime.parse(localDateTimeString, dateTimeFormatter);
+                } catch (DateTimeParseException exc) {
+                    return null;
+                }
+            }
+        };
+
+        dateCreatedColumn.setCellFactory(TextFieldTableCell.forTableColumn(dateStringConverter));
+        dateModifiedColumn.setCellFactory(TextFieldTableCell.forTableColumn(dateStringConverter));
     }
 
     public void openFileChooserDialog(ActionEvent actionEvent) {
@@ -77,6 +108,11 @@ public class Controller {
             logger.log(Level.INFO, "No files were chosen");
         }
         showPositiveAlertMessage("");
+    }
+
+    public void editDateCreatedAction(ActionEvent actionEvent) {
+        logger.log(Level.INFO, "Altering date created");
+
     }
 
     public void clearButtonAction(ActionEvent actionEvent) {
@@ -110,7 +146,7 @@ public class Controller {
         fileListTable.refresh();
     }
 
-    public void applyRenameOperations(ActionEvent actionEvent) {
+    public void applyFileEdits(ActionEvent actionEvent) {
         logger.log(Level.INFO, "User chose to apply the changes");
 
         if (filesToRename.isEmpty()) {
