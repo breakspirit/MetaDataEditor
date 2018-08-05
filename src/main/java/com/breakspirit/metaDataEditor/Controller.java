@@ -33,7 +33,6 @@ public class Controller {
     public Button chooseFilesButton;
     public Button refreshButton;
     public Button clearButton;
-    public Button copyDatesFromDateCreated;
     public TableView fileListTable;
     public TableColumn<FileToEdit, String> fileNameColumn;
     public TableColumn<FileToEdit, LocalDateTime> dateCreatedColumn;
@@ -124,12 +123,6 @@ public class Controller {
         updateFilesSelectedLabel();
 
         fileListTable.refresh();
-    }
-
-    public void copyDatesFromDateCreatedButtonAction(ActionEvent actionEvent) {
-        for (FileToEdit fileToEdit : filesToEdit) {
-
-        }
     }
 
     public void applyFileEdits(ActionEvent actionEvent) {

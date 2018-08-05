@@ -41,14 +41,14 @@
             <version>1.3.0-alpha4</version>
         </dependency>
 
-        <!-- Library of audio/video codecs -->
+        <!-- Libraries of audio/video codecs that I've tried-->
         <!--<dependency>-->
             <!--<groupId>org.jcodec</groupId>-->
             <!--<artifactId>jcodec</artifactId>-->
             <!--<version>0.2.2</version>-->
         <!--</dependency>-->
 
-        <!--This is used to pull metadata for image files-->
+        <!--This is used to pull metadata for image and mp4 but not mkv files-->
         <!--<dependency>-->
             <!--<groupId>com.drewnoakes</groupId>-->
             <!--<artifactId>metadata-extractor</artifactId>-->
@@ -67,11 +67,11 @@
             <!--<version>1.0-r1653468</version>-->
         <!--</dependency>-->
 
-        <dependency>
-            <groupId>org.mp4parser</groupId>
-            <artifactId>isoparser</artifactId>
-            <version>1.9.34</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.mp4parser</groupId>-->
+            <!--<artifactId>isoparser</artifactId>-->
+            <!--<version>1.9.34</version>-->
+        <!--</dependency>-->
     </dependencies>
 
     <build>

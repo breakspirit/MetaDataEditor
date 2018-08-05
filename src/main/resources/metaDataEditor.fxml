@@ -61,11 +61,6 @@
             </Label>
             <Pane prefHeight="44.0" prefWidth="1290.0">
                <children>
-                  <Button fx:id="copyDatesFromDateCreated" mnemonicParsing="false" onAction="#copyDatesFromDateCreatedButtonAction" text="Copy Dates from &quot;Date Created&quot;" translateX="770.0">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Button>
                   <Button fx:id="applyButton" alignment="CENTER" layoutX="20.0" layoutY="1.0" mnemonicParsing="false" onAction="#applyFileEdits" prefHeight="30.0" prefWidth="262.0" styleClass="btn" text="Apply" textAlignment="CENTER" translateX="1000.0">
                      <font>
                         <Font size="14.0" />
