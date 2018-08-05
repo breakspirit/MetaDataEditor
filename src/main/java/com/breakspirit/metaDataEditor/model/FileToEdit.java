@@ -44,10 +44,16 @@ public class FileToEdit {
         if (!file.exists()) {
             throw new IOException("Trying to update file '" + file.getName() + "' but it does not exist!");
         }
+
+        // Set the basic Windows file system dates
         FileTime dateCreatedFileTime = FileTime.from(dateCreated.get().atZone(ZoneId.systemDefault()).toInstant());
         FileTime dateModifiedFileTime = FileTime.from(dateCreated.get().atZone(ZoneId.systemDefault()).toInstant());
         Files.setAttribute(file.toPath(), "creationTime", dateCreatedFileTime);
         Files.setAttribute(file.toPath(), "lastModifiedTime", dateModifiedFileTime);
+
+        // Now try to set media-specific dates
+        //todo none of the libraries tested have actually been able to modify the xmp meta data correctly.  The Windows file system dates work fine.
+
     }
 
     public String getFileName() {
