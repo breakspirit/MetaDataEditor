@@ -3,6 +3,8 @@ package com.breakspirit.metaDataEditor.model;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +16,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 public class FileToEdit {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private File file;
     private SimpleStringProperty fileName;
@@ -46,14 +50,19 @@ public class FileToEdit {
         }
 
         // Set the basic Windows file system dates
-        FileTime dateCreatedFileTime = FileTime.from(dateCreated.get().atZone(ZoneId.systemDefault()).toInstant());
-        FileTime dateModifiedFileTime = FileTime.from(dateCreated.get().atZone(ZoneId.systemDefault()).toInstant());
-        Files.setAttribute(file.toPath(), "creationTime", dateCreatedFileTime);
-        Files.setAttribute(file.toPath(), "lastModifiedTime", dateModifiedFileTime);
+        if (dateCreated != null) {
+            FileTime dateCreatedFileTime = FileTime.from(dateCreated.get().atZone(ZoneId.systemDefault()).toInstant());
+            Files.setAttribute(file.toPath(), "creationTime", dateCreatedFileTime);
+        }
+        if (dateModified != null) {
+            FileTime dateModifiedFileTime = FileTime.from(dateModified.get().atZone(ZoneId.systemDefault()).toInstant());
+            Files.setAttribute(file.toPath(), "lastModifiedTime", dateModifiedFileTime);
+        }
 
         // Now try to set media-specific dates
         //todo none of the libraries tested have actually been able to modify the xmp meta data correctly.  The Windows file system dates work fine.
 
+        logger.info("Successfully applied new meta data to file: " + fileName.getValue());
     }
 
     public String getFileName() {

@@ -59,16 +59,26 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <Pane prefHeight="45.0" prefWidth="1290.0">
+            <Pane prefHeight="44.0" prefWidth="1290.0">
                <children>
-                  <Button fx:id="applyButton" alignment="CENTER" layoutX="20.0" layoutY="1.0" mnemonicParsing="false" onAction="#applyFileEdits" prefHeight="30.0" prefWidth="262.0" styleClass="btn" text="Apply" textAlignment="CENTER">
+                  <Button fx:id="copyDatesFromDateCreated" mnemonicParsing="false" onAction="#copyDatesFromDateCreatedButtonAction" text="Copy Dates from &quot;Date Created&quot;" translateX="770.0">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Button>
+                  <Button fx:id="applyButton" alignment="CENTER" layoutX="20.0" layoutY="1.0" mnemonicParsing="false" onAction="#applyFileEdits" prefHeight="30.0" prefWidth="262.0" styleClass="btn" text="Apply" textAlignment="CENTER" translateX="1000.0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Label fx:id="filesSelectedLabel" text="0 Files Selected" translateX="25.0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
                </children>
                <VBox.margin>
-                  <Insets left="1000.0" />
+                  <Insets />
                </VBox.margin>
             </Pane>
          </children>

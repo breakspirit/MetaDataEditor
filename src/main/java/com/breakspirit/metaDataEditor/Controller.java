@@ -33,11 +33,13 @@ public class Controller {
     public Button chooseFilesButton;
     public Button refreshButton;
     public Button clearButton;
+    public Button copyDatesFromDateCreated;
     public TableView fileListTable;
     public TableColumn<FileToEdit, String> fileNameColumn;
     public TableColumn<FileToEdit, LocalDateTime> dateCreatedColumn;
     public TableColumn<FileToEdit, LocalDateTime> dateModifiedColumn;
     public Label alertLabel;
+    public Label filesSelectedLabel;
     public Button applyButton;
 
     private static final String DEFAULT_FILE_LOCATION = "C:\\Users\\break\\Desktop";
@@ -87,6 +89,7 @@ public class Controller {
         } else {
             logger.info("No files were chosen");
         }
+        updateFilesSelectedLabel();
         showPositiveAlertMessage("");
     }
 
@@ -95,6 +98,7 @@ public class Controller {
 
         filesToEdit.clear();
         showPositiveAlertMessage("Table cleared");
+        updateFilesSelectedLabel();
 
         fileListTable.refresh();
     }
@@ -117,8 +121,15 @@ public class Controller {
         }
 
         showPositiveAlertMessage("Table refreshed");
+        updateFilesSelectedLabel();
 
         fileListTable.refresh();
+    }
+
+    public void copyDatesFromDateCreatedButtonAction(ActionEvent actionEvent) {
+        for (FileToEdit fileToEdit : filesToEdit) {
+
+        }
     }
 
     public void applyFileEdits(ActionEvent actionEvent) {
@@ -141,13 +152,8 @@ public class Controller {
             }
         }
         showPositiveAlertMessage("All edit operations were applied successfully!");
+        updateFilesSelectedLabel();
         fileListTable.refresh();
-    }
-
-    private String applyAllSelectedTransformations(File inputFile) {
-        String transformedName = inputFile.getName();
-
-        return transformedName;
     }
 
     private void showPositiveAlertMessage(String message) {
@@ -158,5 +164,9 @@ public class Controller {
     private void showNegativeAlertMessage(String message) {
         alertLabel.setText(message);
         alertLabel.setTextFill(Color.web("#930a21"));
+    }
+
+    private void updateFilesSelectedLabel() {
+        filesSelectedLabel.setText(fileListTable.getItems().size() + " Files Selected");
     }
 }
