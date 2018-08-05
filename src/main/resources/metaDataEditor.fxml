@@ -49,9 +49,9 @@
             </HBox>
             <TableView fx:id="fileListTable" editable="true" prefHeight="580.0" prefWidth="1290.0" tableMenuButtonVisible="true">
               <columns>
-                <TableColumn fx:id="fileNameColumn" prefWidth="223.0" text="File Name" />
-                <TableColumn fx:id="dateCreatedColumn" prefWidth="203.0" text="Date Created" />
-                  <TableColumn fx:id="dateModifiedColumn" maxWidth="343.0" prefWidth="136.0" text="Date Modified" />
+                <TableColumn fx:id="fileNameColumn" prefWidth="599.0" text="File Name" />
+                <TableColumn fx:id="dateCreatedColumn" prefWidth="339.0" text="Date Created" />
+                  <TableColumn fx:id="dateModifiedColumn" maxWidth="861.0" prefWidth="349.0" text="Date Modified" />
               </columns>
             </TableView>
             <Label fx:id="alertLabel" text="Alert Label" textAlignment="RIGHT">
